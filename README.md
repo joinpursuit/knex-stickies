@@ -27,10 +27,25 @@ We'll be creating an npm project from scratch and using it to:
   - If you have updated any of the defaults, please adjust the steps according to your setup
   - If you want to learn more about the `createdb` command, you can type `man createdb` to see a manual
 - `psql stickies_dev` - this will open up a Postgres shell that is already connected to the `stickies_dev` database
-- `CREATE TABLE reminders (username TEXT, reminder TEXT, likes INTEGER DEFAULT 0, completed BOOLEAN DEFAULT false, created_at TIMESTAMP DEFAULT NOW());`
-- **NOTE:** It is essential that the database name and table name are not the same, or you can end up with namespace errors.
-- `INSERT INTO reminders (username, reminder) VALUES ('Dustin', 'Dust the furniture'), ('Velma', 'Vacuum the floors'), ('Waldo', 'Wash the dishes');`
-- `SELECT * FROM reminders;`
+
+- Run the following in the Postgres shell:
+- Create a reminders table:
+
+```SQL
+CREATE TABLE reminders (username TEXT, reminder TEXT, likes INTEGER DEFAULT 0, completed BOOLEAN DEFAULT false, created_at TIMESTAMP DEFAULT NOW());
+```
+
+- Insert some data into the reminders table:
+
+```SQL
+ INSERT INTO reminders (username, reminder) VALUES ('Dustin', 'Dust the furniture'), ('Velma', 'Vacuum the floors'), ('Waldo', 'Wash the dishes');
+```
+
+- Query the reminders table:
+
+```SQL
+`SELECT * FROM reminders;`
+```
 
 ### Start a New Project
 
