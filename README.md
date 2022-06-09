@@ -228,7 +228,7 @@ We should see something like this:
 
 And that our terminal is just hanging. We can press <kbd>control</kbd> <kbd>c</kbd> to get control of our terminal back.
 
-This is the typical default behavior of our app because of our configuration from knex. Once a connection is made, it stays open until we close it.
+This is the typical default behavior of our app because of our configuration from Knex. Once a connection is made, it stays open until we close it.
 
 We can close the connection in our `run` function for convenience.
 
@@ -369,6 +369,20 @@ const newReminder = async (newReminder) => {
     newReminder
   );
   return query.rows[0];
+};
+```
+
+```js
+const run = async () => {
+  console.log("App is running");
+  await dropRemindersTable();
+  await createRemindersTable();
+  await insertManyReminders();
+  await newReminder({ username: "Freddy", reminder: "Feed the cat" });
+  await getAllReminders();
+  knex.destroy(() => {
+    console.log("The connection is closed");
+  });
 };
 ```
 
