@@ -255,8 +255,8 @@ We can create a table using Knex. This functionality will be helpful for keeping
 
 First, let's drop the table. Go to the command line where you ran `createdb stickies` and run the following two commands for a full reset:
 
-- `dropdb stickies`
-- `createdb stickies`
+- `dropdb stickies_dev`
+- `createdb stickies_dev`
 
 Remember, there is no `undo` when it comes to databases. So be very careful with your destructive activities. When working at a company, there are usually backup strategies employed.
 
