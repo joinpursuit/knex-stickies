@@ -175,6 +175,7 @@ const run = async () => {
   console.log("app is running");
 };
 
+// keep the function invokation at the bottom of the file, below all other function expressions
 run();
 ```
 
