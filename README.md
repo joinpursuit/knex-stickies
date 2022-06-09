@@ -44,7 +44,7 @@ CREATE TABLE reminders (username TEXT, reminder TEXT, likes INTEGER DEFAULT 0, c
 - Query the reminders table:
 
 ```SQL
-`SELECT * FROM reminders;`
+SELECT * FROM reminders;
 ```
 
 ### Start a New Project
