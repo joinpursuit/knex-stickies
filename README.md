@@ -141,7 +141,7 @@ const config = require("./knexfile")[env];
 console.log(config);
 ```
 
-`config should now result in:
+config should now result in:
 
 ```js
 {
