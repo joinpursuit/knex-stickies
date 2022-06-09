@@ -461,6 +461,30 @@ const deleteReminder = async (id) => {
 };
 ```
 
+
+```js
+const run = async () => {
+  console.log("App is running");
+  await dropRemindersTable();
+  await createRemindersTable();
+  await insertManyReminders();
+  await newReminder({ username: "Freddy", reminder: "Feed the cat" });
+  await getAllReminders();
+  await getReminder(2);
+  await updateReminder(3, {
+    username: "Waldo",
+    reminder: "Wash the dishes",
+    likes: 700,
+    completed: true,
+  });
+  await deleteReminder(1);
+  knex.destroy(() => {
+    console.log("The connection is closed");
+  });
+};
+
+```
+
 ## Summary
 
 We've built a JavaScript app that uses the pg and knex libraries to interact with a Postgres database through the app. We have demonstrated how to use Knex to perform CRUD operations.
