@@ -35,6 +35,7 @@ const dropRemindersTable = async () => {
 const getAllReminders = async () => {
   const query = await knex.raw("SELECT * FROM reminders");
   console.log(query.rows);
+  return query.rows;
 };
 
 const createRemindersTable = async () => {
