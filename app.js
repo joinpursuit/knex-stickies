@@ -1,12 +1,7 @@
-// Select the correct environment that the app is running in
-// By default, select "development"
 const env = process.env.NODE_ENV || "development";
-// Require the configuration set in the knexfile, access
-// the correct configuration for the environment selected
 const config = require("./knexfile")[env];
 
-// Create a connection called knex
-const knex = require("knex")(config);
+const db = require("knex")(config);
 
 const run = async () => {
   console.log("App is running");
@@ -23,44 +18,52 @@ const run = async () => {
     completed: true,
   });
   await deleteReminder(1);
-  knex.destroy(() => {
+  db.destroy(() => {
     console.log("The connection is closed");
   });
 };
 
-const dropRemindersTable = async () => {
-  return knex.schema.dropTable("reminders");
-};
-
 const getAllReminders = async () => {
-  const query = await knex.raw("SELECT * FROM reminders");
+  const query = await db.raw("SELECT * FROM reminders");
   console.log(query.rows);
-};
-
-const createRemindersTable = async () => {
-  try {
-    await knex.schema.createTable("reminders", (table) => {
-      table.increments("id").primary;
-      table.text("username");
-      table.text("reminder");
-      table.integer("likes").defaultTo(0);
-      table.boolean("completed").defaultTo(false);
-      table.timestamp("created_at").defaultTo(knex.fn.now());
-    });
-    console.log("Table created");
-  } catch (error) {
-    console.log("There was an error", error);
-  }
+  return query.rows;
 };
 
 const getReminder = async (id) => {
-  const query = await knex.raw("SELECT * FROM reminders WHERE id=?", [id]);
+  const query = await db.raw("SELECT * FROM reminders WHERE id=?", [id]);
   console.log(`A reminder with an id of ${id}`, query.rows[0]);
   return query.rows[0];
 };
 
+const newReminder = async (newReminder) => {
+  const { username, reminder } = newReminder;
+  const query = await db.raw(
+    "INSERT INTO reminders (username, reminder) VALUES(:username, :reminder) RETURNING *",
+    { username, reminder }
+  );
+  return query.rows[0];
+};
+
+const updateReminder = async (id, updatedReminder) => {
+  const { username, reminder, completed, likes } = updatedReminder;
+  const query = await db.raw(
+    "UPDATE reminders SET username=:username, reminder=:reminder, completed=:completed, likes=:likes where id=:id RETURNING *",
+    { id, username, reminder, completed, likes }
+  );
+  console.log(`Updated reminder with id of ${id}`, query.rows[0]);
+  return query.rows[0];
+};
+
+const deleteReminder = async (id) => {
+  const query = await db.raw("DELETE FROM reminders WHERE id=? RETURNING *", [
+    id,
+  ]);
+  console.log("This reminder was deleted", query.rows[0]);
+  return query.rows[0];
+};
+
 const insertManyReminders = async () => {
-  await knex("reminders").insert([
+  await db("reminders").insert([
     {
       username: "Dustin",
       reminder: "Dust the furniture",
@@ -76,31 +79,25 @@ const insertManyReminders = async () => {
   ]);
 };
 
-const newReminder = async (newReminder) => {
-  const query = await knex.raw(
-    "INSERT INTO reminders (username, reminder) VALUES(:username, :reminder) RETURNING *",
-    newReminder
-  );
-  return query.rows[0];
+const createRemindersTable = async () => {
+  try {
+    await db.schema.createTable("reminders", (table) => {
+      table.increments("id").primary;
+      table.text("username").notNullable();
+      table.text("reminder");
+      table.integer("likes").defaultTo(0);
+      table.boolean("completed").defaultTo(false);
+      table.timestamp("created_at").defaultTo(db.fn.now());
+    });
+    console.log("Table created");
+  } catch (error) {
+    console.log("There was an error", error);
+  }
 };
 
-const updateReminder = async (id, reminder) => {
-  console.log({ id, ...reminder });
-  const query = await knex.raw(
-    "UPDATE reminders SET username=:username, reminder=:reminder, completed=:completed, likes=:likes where id=:id RETURNING *",
-    { id, ...reminder }
-  );
-  console.log(`Updated reminder with id of ${id}`, query.rows[0]);
-  return query.rows[0];
+const dropRemindersTable = async () => {
+  return db.schema.dropTable("reminders");
 };
 
-const deleteReminder = async (id) => {
-  const query = await knex.raw(
-    "DELETE FROM reminders WHERE id = ? RETURNING *",
-    [id]
-  );
-  console.log("This reminder was deleted", query.rows[0]);
-  return query.rows[0];
-};
-
+// keep the function invokation at the bottom of the file, below all other function expressions
 run();
