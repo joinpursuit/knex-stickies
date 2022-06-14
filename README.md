@@ -44,7 +44,7 @@ CREATE TABLE reminders (username TEXT, reminder TEXT, likes INTEGER DEFAULT 0, c
 - Query the reminders table:
 
 ```SQL
-`SELECT * FROM reminders;`
+SELECT * FROM reminders;
 ```
 
 ### Start a New Project
@@ -141,7 +141,7 @@ const config = require("./knexfile")[env];
 console.log(config);
 ```
 
-`config should now result in:
+config should now result in:
 
 ```js
 {
@@ -175,6 +175,7 @@ const run = async () => {
   console.log("app is running");
 };
 
+// keep the function invokation at the bottom of the file, below all other function expressions
 run();
 ```
 
@@ -254,8 +255,8 @@ We can create a table using Knex. This functionality will be helpful for keeping
 
 First, let's drop the table. Go to the command line where you ran `createdb stickies` and run the following two commands for a full reset:
 
-- `dropdb stickies`
-- `createdb stickies`
+- `dropdb stickies_dev`
+- `createdb stickies_dev`
 
 Remember, there is no `undo` when it comes to databases. So be very careful with your destructive activities. When working at a company, there are usually backup strategies employed.
 
@@ -458,6 +459,30 @@ const deleteReminder = async (id) => {
   console.log("This reminder was deleted", query.rows[0]);
   return query.rows[0];
 };
+```
+
+
+```js
+const run = async () => {
+  console.log("App is running");
+  await dropRemindersTable();
+  await createRemindersTable();
+  await insertManyReminders();
+  await newReminder({ username: "Freddy", reminder: "Feed the cat" });
+  await getAllReminders();
+  await getReminder(2);
+  await updateReminder(3, {
+    username: "Waldo",
+    reminder: "Wash the dishes",
+    likes: 700,
+    completed: true,
+  });
+  await deleteReminder(1);
+  knex.destroy(() => {
+    console.log("The connection is closed");
+  });
+};
+
 ```
 
 ## Summary
