@@ -1,7 +1,11 @@
 const env = process.env.NODE_ENV || "development";
-const config = require("./knexfile")[env];
 
-const db = require("knex")(config);
+import { configs } from "./knexfile.mjs";
+const config = configs[env];
+
+import knex from "knex";
+
+const db = knex(config);
 
 const run = async () => {
   console.log("App is running");
